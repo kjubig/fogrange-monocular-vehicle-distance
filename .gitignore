@@ -1,0 +1,12 @@
+# Datasets, model weights and outputs never go to git: dataset licences forbid publishing the images.
+data/
+checkpoints/
+results/
+*.pt
+
+# Python
+.venv/
+__pycache__/
+
+# OS
+.DS_Store
