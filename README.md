@@ -77,7 +77,7 @@ and `distances.csv`. The YOLO26m weights (44 MB) and Depth Anything V2 Metric Sm
 
 ## Course materials
 
-The project description, schedule and first presentation (in Polish) are in [`materialy/`](materialy/).
+The project description, the implementation plan and the first presentation (in Polish) are in [`docs/`](docs/).
 
 ## Licences
 

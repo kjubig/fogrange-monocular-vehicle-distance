@@ -20,5 +20,3 @@ Plan według 11 slajdów w aktualnej prezentacji „Prezentacja WK - final”.
 | 9 | Dane do uczenia i testów | Łukasz | SHIFT do uczenia i walidacji, Seeing Through Fog do głównego testu, KITTI do uruchomienia metod i oceny w dobrej pogodzie. |
 | 10 | Plan zadań | Paweł | Etapy prac, terminy i rezultat na prezentację końcową. |
 | 11 | Źródła | Paweł | Publikacje, architektury i zbiory danych wykorzystane w projekcie. |
-
-[Tekst mówiony i objaśnienia do slajdów Łukasza](Tekst%20do%20prezentacji%20-%20Łukasz.md).
