@@ -1,8 +1,11 @@
-# Datasets, model weights and outputs never go to git: dataset licences forbid publishing the images.
+# Datasets, model weights and intermediate outputs never go to git.
 data/
 checkpoints/
-results/
 *.pt
+
+# Results: only the one-frame pictures and table shown in the README are kept.
+results/*
+!results/one_frame/
 
 # Python
 .venv/

@@ -25,6 +25,35 @@ three methods (KITTI is good weather only):
 | SHIFT | clear | sequence `0094-23d0`, frame 400 (noon), from an unofficial mirror | yes | no | yes, plus the simulator depth map |
 | SHIFT | heavy fog | sequence `0804-e4f8`, frame 0 (daytime) | yes | no | yes, plus the simulator depth map |
 
+## First results
+
+Distances in metres. GT exists only for KITTI and SHIFT here: the Seeing Through Fog labels need registration.
+SHIFT has no lidar. All numbers are in [`results/one_frame/distances.csv`](results/one_frame/distances.csv).
+
+| Frame | Vehicle | M1 road | M1 height | M2 network | M3 lidar | GT |
+|---|---|---|---|---|---|---|
+| KITTI, clear | car 1 | 23.2 | 22.9 | 26.2 | 23.5 | 23.4 |
+| | car 2 | 39.6 | 47.4 | 49.5 | 45.9 | 45.7 |
+| | car 3 | 55.0 | 60.2 | 49.7 | 58.6 | 58.5 |
+| SHIFT, clear | car | 24.4 | 27.3 | 46.4 | – | 24.7 |
+| | fire engine | 20.6 | 15.1 | 43.3 | – | 19.7 |
+| SHIFT, heavy fog | car | 19.4 | 16.9 | 48.0 | – | 19.0 |
+| | bus | 29.6 | 26.0 | 57.8 | – | 29.4 |
+
+- On KITTI the lidar is within 0.4 m of GT; the boxes were labelled from the same lidar, so this is expected.
+- The depth network roughly doubles every SHIFT distance, in clear weather and in fog alike. It was trained on
+  Virtual KITTI 2 and does not know the SHIFT camera. Fine-tuning on SHIFT is meant to fix this.
+- The road-plane geometry is accurate on SHIFT because its simulated town is flat.
+
+Each picture shows the image with the YOLO boxes (lidar points in red where available), the network's depth map below,
+and for SHIFT the simulator's depth map at the bottom. Near is red, 80 m and beyond is blue.
+
+| | Clear | Bad weather |
+|---|---|---|
+| KITTI | ![KITTI](results/one_frame/kitti.png) | – |
+| Seeing Through Fog | ![STF clear](results/one_frame/stf.png) | ![STF snow](results/one_frame/stf_snow.png) |
+| SHIFT | ![SHIFT clear](results/one_frame/shift.png) | ![SHIFT fog](results/one_frame/shift_fog.png) |
+
 ## Run
 
 ```bash
@@ -52,6 +81,7 @@ The project description, schedule and first presentation (in Polish) are in [`ma
 
 ## Licences
 
-Code: AGPL-3.0 (see `LICENSE`), because Ultralytics YOLO is AGPL-3.0. Data is not included and must not be committed:
-KITTI is CC BY-NC-SA 3.0, SHIFT CC BY-NC-SA 4.0, and the Seeing Through Fog terms of use forbid passing the data on and
-require anonymised people and licence plates in published images.
+Code: AGPL-3.0 (see `LICENSE`), because Ultralytics YOLO is AGPL-3.0. The datasets are not included.
+The pictures in `results/one_frame/` are built from dataset images and keep their terms, for non-commercial use only:
+KITTI (Geiger et al., CC BY-NC-SA 3.0), SHIFT (Sun et al., CC BY-NC-SA 4.0) and the example frames published in the
+[Seeing Through Fog repository](https://github.com/princeton-computational-imaging/SeeingThroughFog) (Bijelic et al.).
