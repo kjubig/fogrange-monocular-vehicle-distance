@@ -140,8 +140,12 @@ z wersją, która usuwa punkty drogi i wybiera przednią powierzchnię auta, i z
   i Tr_velo_to_cam. `velodyne` to pliki .bin float32 (x, y, z, odbicie).
 - **Kamera:** 1,65 m nad drogą (Geiger i in., IJRR 2013, rys. 3).
 - **Uwaga:** etykiety ma tylko 7481 obrazów treningowych, więc robimy własny podział.
-- **Stan:** pojedyncza klatka pochodzi z publicznego repozytorium z kilkoma klatkami KITTI. Pełny zbiór trzeba jeszcze
-  pobrać.
+- **Sprawdzone 14 listopada 2026:** archiwa na oficjalnym serwerze mają 7481 klatek w `training/` (obrazy, LiDAR,
+  kalibracja, etykiety) i 7518 w `testing/` (bez etykiet, nie używamy). Pozwalają pobierać pojedyncze pliki, więc
+  bierzemy tylko potrzebną liczbę klatek zamiast 41 GB. Gotowe wersje z TensorFlow Datasets, Ultralytics i Kaggle
+  nie wystarczą: nie mają LiDAR-u, a wersja Ultralytics ma tylko ramki 2D.
+- **Stan:** pojedyncza klatka pochodzi z publicznego repozytorium z kilkoma klatkami KITTI i jest identyczna
+  z oficjalną. Większy podzbiór trzeba jeszcze pobrać.
 
 ### Seeing Through Fog: prawdziwa mgła, śnieg i deszcz (główny test)
 
@@ -172,12 +176,21 @@ z wersją, która usuwa punkty drogi i wybiera przednią powierzchnię auta, i z
 python download.py --view "[front]" --group "[img, det_2d, det_3d, depth]" --split "[train, val]" --framerate "[images]" --shift "discrete" ./data/shift
 ```
 
-- **Stan:** 12 listopada 2026 oficjalne serwery nie odpowiadają. Korzystamy z nieoficjalnej kopii na Hugging Face
-  (`KevinConnorLee/SHIFT`). Kopia ma nagrania wideo zamiast pojedynczych obrazów, etykiety 3D i plik `seq.csv`
-  z pogodą i porą dnia każdej sekwencji. Mapy głębi są w niej tylko dla części `train`, a LiDAR-u nie ma wcale.
-  Dopóki serwery nie wrócą, walidację wydzielamy z sekwencji `train`.
-- **Co ma:** symulacja CARLA: obrazy, ramki 2D i 3D, mapy głębi (24 bity, rozdzielczość 1 mm); zmiany zachmurzenia,
-  deszczu, mgły i pory dnia. Wysokość kamery jest w etykietach (ok. 1,6 m). Licencja CC BY-NC-SA 4.0.
+- **Stan:** 14 listopada 2026 oficjalne serwery i strona projektu nie odpowiadają, a zgłoszenia o tym w repozytorium
+  autorów są bez odpowiedzi od stycznia 2026. Korzystamy z nieoficjalnej, częściowej kopii na Hugging Face
+  (`KevinConnorLee/SHIFT`).
+- **Co jest w kopii:** tylko zbiór `discrete`, widok z przodu: 3000 sekwencji `train` i 500 `val` jako nagrania wideo
+  (10 klatek na sekundę, 500 klatek na sekwencję), etykiety 2D i 3D oraz `seq.csv` z pogodą i porą dnia każdej
+  sekwencji. Mapy głębi są tylko dla części `train` (1 503 000 plików, czyli każda klatka 3000 sekwencji).
+  LiDAR-u, zbioru `continuous` i części testowej nie ma. Dopóki serwery nie wrócą, walidację wydzielamy
+  z sekwencji `train`.
+- **Na ile kopii można ufać:** bajt po bajcie nie da się jej porównać z oryginałem, bo oryginał jest niedostępny.
+  Zgadza się natomiast z artykułem (liczba sekwencji, długość, częstotliwość) i z oficjalnym nazewnictwem plików,
+  a na naszych dwóch klatkach głębia z symulatora zgadza się z etykietami 3D z dokładnością do ok. 1 m.
+- **Co ma oryginał:** symulacja CARLA: obrazy, ramki 2D i 3D, mapy głębi (24 bity, rozdzielczość 1 mm); zmiany
+  zachmurzenia, deszczu, mgły i pory dnia. Wysokość kamery jest w etykietach (ok. 1,6 m).
+- **Licencja:** źródła autorów się różnią. Strona projektu podawała CC BY-SA 4.0, a oficjalny skrypt `download.py`
+  podaje CC BY-NC-SA 4.0. Trzymamy się ostrzejszej, czyli tylko użytek niekomercyjny.
 - **Wybór danych:** B to dobra pogoda, C to mgła i deszcz, oba w porównywalnej porze dnia i tej samej liczbie klatek.
   Wybieramy po kolumnach pogody i pory dnia w `seq.csv`.
 - **Uwaga:** obraz wygląda jak z gry, dlatego test jest zawsze na prawdziwych danych.
