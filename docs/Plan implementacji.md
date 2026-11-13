@@ -1,7 +1,7 @@
 # Plan implementacji
 
 Zespół: Łukasz Kubik i Paweł Mroczek. Założenia projektu są w [opisie projektu](Opis%20projektu.md).
-Ten plan mówi, co dokładnie liczymy, w jakiej kolejności i na jakich danych. Stan na 12 listopada 2026.
+Ten plan mówi, co dokładnie liczymy, w jakiej kolejności i na jakich danych. Stan na 14 listopada 2026.
 
 Mierzymy odległość do pojazdów przed autem trzema metodami i sprawdzamy, jak pogarszają ją mgła, śnieg i deszcz:
 
@@ -17,8 +17,8 @@ Poprawa jest hipotezą do sprawdzenia. Wynik negatywny też jest wynikiem.
 
 | Termin | Prace | Stan |
 | --- | --- | --- |
-| Prezentacja 1 (slajdy z 4 listopada 2026) | Przegląd literatury, prezentacja założeń, pierwsze uruchomienie metod. | Zrobione. Metody działają na pojedynczych klatkach. Ocena na całym KITTI przechodzi do następnego etapu. |
-| Do 9 grudnia 2026 | Ocena M1, M2 i M3 na KITTI z miarami błędu. Dwie sieci głębi na KITTI. Tabele STF: dobra kontra zła pogoda. Podział SHIFT na uczenie i walidację, próbne dostrojenie na małej próbce. | W toku: ocena na KITTI. |
+| Prezentacja 1 (slajdy z 4 listopada 2026) | Przegląd literatury, prezentacja założeń, pierwsze uruchomienie metod. | Zrobione. Metody działają na pojedynczych klatkach. Ocena na wielu klatkach KITTI przechodzi do następnego etapu. |
+| Do 9 grudnia 2026 | Ocena M1, M2 i M3 na KITTI z miarami błędu. Dwie sieci głębi na KITTI. Tabele STF: dobra kontra zła pogoda. Podział SHIFT na uczenie i walidację, próbne dostrojenie na małej próbce. | W toku: ocena na KITTI (gałąź `kitti-eval`). |
 | Do 5 stycznia 2027 | Pełne dostrojenie wariantów B i C. Test A, B i C na STF i KITTI. | Nie zaczęte. |
 | 13 stycznia 2027 | Prezentacja końcowa: tabele według pogody i odległości, film z odległościami nad autami, README. | Nie zaczęte. |
 
@@ -34,8 +34,9 @@ do 23:59. Nazwę oddania warto potwierdzić z prowadzącą.
 
 ## Najbliższe kroki
 
-1. **Ocena na KITTI.** Podział 7481 oznaczonych klatek na część treningową i walidacyjną (popularny podział
-   3712/3769), dopasowanie wykryć do etykiet, miary błędu i pierwsza tabela w podziale na odległości.
+1. **Ocena na KITTI.** Klatki z części treningowej i walidacyjnej (popularny podział 3712/3769), dopasowanie wykryć
+   do etykiet, miary błędu i pierwsza tabela w podziale na odległości. Nie liczymy od razu na całym zbiorze: liczbę
+   klatek dostosowujemy na bieżąco (zasada w rozdziale „Kod i zasady pracy”).
 2. **Dopracowanie metod na części treningowej KITTI:** wysokości klas dla M1, obszar ramki dla M2, wybór punktów
    dla M3 (szczegóły w rozdziale „Metody”).
 3. **Druga sieć głębi:** UniDepth V2 jako model odniesienia.
@@ -144,8 +145,8 @@ z wersją, która usuwa punkty drogi i wybiera przednią powierzchnię auta, i z
   kalibracja, etykiety) i 7518 w `testing/` (bez etykiet, nie używamy). Pozwalają pobierać pojedyncze pliki, więc
   bierzemy tylko potrzebną liczbę klatek zamiast 41 GB. Gotowe wersje z TensorFlow Datasets, Ultralytics i Kaggle
   nie wystarczą: nie mają LiDAR-u, a wersja Ultralytics ma tylko ramki 2D.
-- **Stan:** pojedyncza klatka pochodzi z publicznego repozytorium z kilkoma klatkami KITTI i jest identyczna
-  z oficjalną. Większy podzbiór trzeba jeszcze pobrać.
+- **Stan:** pobranych jest 200 klatek (0,6 GB), po 100 z listy treningowej i walidacyjnej. Wszystkie dają się
+  wczytać, a LiDAR zgadza się z etykietami (mediana różnicy 0,24 m). Kolejne klatki dobieramy w miarę potrzeb.
 
 ### Seeing Through Fog: prawdziwa mgła, śnieg i deszcz (główny test)
 
@@ -204,6 +205,10 @@ zaznaczamy to przy wynikach.
 
 - **Mały, czytelny kod.** Każdy etap to osobny skrypt w `scripts/`. Wspólne funkcje wydzielimy do modułu dopiero wtedy,
   gdy zaczną się powtarzać w kilku skryptach.
+- **Liczba klatek dostosowywana na bieżąco.** Nie pobieramy całych zbiorów ani nie ustalamy z góry liczby klatek.
+  Na każdym etapie zaczynamy od małej próbki (w KITTI: 20, potem 100 klatek), żeby szybko sprawdzić, czy kod działa,
+  i zwiększamy ją, gdy wyniki są jeszcze niepewne, na przykład gdy w którymś przedziale odległości jest za mało aut.
+  To samo dotyczy STF i SHIFT. Przy każdej tabeli podajemy, z ilu klatek i aut pochodzi.
 - **Narzędzia:** Python 3.13, PyTorch, numpy, OpenCV, Ultralytics YOLO (YOLO26m), transformers. Ultralytics jest
   na licencji AGPL-3.0, dlatego repozytorium też.
 - **Sprzęt:** uruchamianie gotowych modeli lokalnie, trening na Colabie lub Kaggle (16 GB) albo na serwerze uczelni.
