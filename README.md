@@ -75,6 +75,22 @@ uv pip install --python .venv/bin/python -r requirements.txt
 The second script prints a table per frame and saves `results/one_frame/{kitti,stf,stf_snow,shift,shift_fog}.png`
 and `distances.csv`. The YOLO26m weights (44 MB) and Depth Anything V2 Metric Small (99 MB) download on first use.
 
+### More KITTI frames
+
+The next step is an evaluation on many KITTI frames. Only the frames that are needed are read out of the official
+archives (41 GB in total), half from the usual train list and half from the val list:
+
+```bash
+.venv/bin/python scripts/fetch_kitti.py 200
+```
+
+```bash
+.venv/bin/python scripts/check_kitti.py
+```
+
+The first script takes about 15 minutes for 200 frames (0.6 GB). The second one checks that every frame can be read
+and that lidar and labels agree, and saves a picture of five random frames to `results/kitti/check.png`.
+
 ## Course materials
 
 The project description, the implementation plan and the first presentation (in Polish) are in [`docs/`](docs/).
